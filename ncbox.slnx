@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NCBOX.Core/NCBOX.Core.csproj" />
+  </Folder>
+  <Folder Name="/src/Apps/">
+    <Project Path="src/Apps/ngc/ngc.csproj" />
+    <Project Path="src/Apps/cbc/cbc.csproj" />
+  </Folder>
+  <Project Path="builder/builder.csproj" />
+</Solution>

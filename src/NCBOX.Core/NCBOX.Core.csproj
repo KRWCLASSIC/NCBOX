@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>NCBOX.Core</AssemblyName>
+    <RootNamespace>NCBOX.Core</RootNamespace>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+</Project>

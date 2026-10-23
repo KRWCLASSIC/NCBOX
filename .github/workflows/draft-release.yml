@@ -1,0 +1,122 @@
+name: Draft Pre-Release
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    name: Build Windows x64 package
+    runs-on: windows-latest
+    if: ${{ !contains(github.event.head_commit.message || '', '!!') }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build NCBOX apps
+        shell: pwsh
+        run: dotnet run --project builder -- all win-x64
+
+      - name: Package Windows binaries
+        shell: pwsh
+        run: |
+          $packageDir = Join-Path $env:RUNNER_TEMP 'ncbox-win-x64'
+          New-Item -ItemType Directory -Path $packageDir -Force | Out-Null
+          $files = @('dist\win-x64\ngc.exe', 'dist\win-x64\cbc.exe', 'NCBOX.md')
+          Copy-Item -Path $files -Destination $packageDir
+          Compress-Archive -Path (Join-Path $packageDir '*') -DestinationPath (Join-Path $env:RUNNER_TEMP 'NCBOX-win-x64.zip') -Force
+
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-windows
+          path: ${{ runner.temp }}/NCBOX-win-x64.zip
+          retention-days: 1
+
+  build-linux:
+    name: Build Linux x64 package
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message || '', '!!') }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install NativeAOT prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang zlib1g-dev build-essential
+
+      - name: Build NCBOX apps
+        run: bash ./build.sh all linux-x64
+
+      - name: Package Linux binaries
+        run: |
+          package_dir="$RUNNER_TEMP/ncbox-linux-x64"
+          mkdir -p "$package_dir"
+          cp dist/linux-x64/ngc dist/linux-x64/cbc NCBOX.md "$package_dir/"
+          tar -czf "$RUNNER_TEMP/NCBOX-linux-x64.tar.gz" -C "$package_dir" .
+
+      - name: Upload Linux package
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-linux
+          path: ${{ runner.temp }}/NCBOX-linux-x64.tar.gz
+          retention-days: 1
+
+  create-draft-release:
+    name: Create draft pre-release
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download Windows and Linux packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-assets-*
+          path: release_assets
+          merge-multiple: true
+
+      - name: Generate SHA-256 manifest
+        working-directory: release_assets
+        run: sha256sum * > SHA256SUMS.txt
+
+      - name: Determine version and tag
+        id: release
+        shell: bash
+        run: |
+          VERSION="$(grep -oPm1 '(?<=<Version>)[^<]+' Directory.Build.props)"
+          if [[ -z "$VERSION" ]]; then
+            echo "Could not read <Version> from Directory.Build.props" >&2
+            exit 1
+          fi
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "tag=v${VERSION}-preview-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "title=NCBOX Preview ${VERSION} (${SHORT_SHA})" >> "$GITHUB_OUTPUT"
+
+      - name: Create draft pre-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release.outputs.tag }}
+          name: ${{ steps.release.outputs.title }}
+          draft: true
+          prerelease: true
+          files: release_assets/*
+          generate_release_notes: true

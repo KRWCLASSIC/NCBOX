@@ -1,0 +1,20 @@
+{
+  "optimization": {
+    "preference": "Size",
+    "foldIdenticalMethodBodies": true,
+    "trimMetadata": true,
+    "stripSymbols": true,
+    "generateStackTraceData": false,
+    "invariantGlobalization": true,
+    "eventSourceSupport": false,
+    "debuggerSupport": false,
+    "useSystemResourceKeys": true,
+    "httpActivityPropagationSupport": false,
+    "enableUnsafeBinaryFormatterSerialization": false,
+    "enableUnsafeUTF7Encoding": false,
+    "trimMode": "full"
+  },
+  "debug": {
+    "keepIntermediatePdbFiles": true
+  }
+}

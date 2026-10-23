@@ -1,0 +1,14 @@
+# Build & Artifacts
+.temp/
+dist/
+bin/
+obj/
+
+# IDE & OS
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+Thumbs.db
+.DS_Store

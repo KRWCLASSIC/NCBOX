@@ -1,0 +1,45 @@
+name: Pull Request Builds
+
+on:
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    name: Build Windows x64
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build NCBOX apps
+        shell: pwsh
+        run: dotnet run --project builder -- all win-x64
+
+  build-linux:
+    name: Build Linux x64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install NativeAOT prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang zlib1g-dev build-essential
+
+      - name: Build NCBOX apps
+        run: bash ./build.sh all linux-x64

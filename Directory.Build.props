@@ -1,0 +1,27 @@
+<Project>
+  <PropertyGroup>
+    <!-- Common build settings across all projects in NCBOX -->
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+
+    <!-- Metadata embedded into compiled binaries -->
+    <Authors>KRWCLASSIC</Authors>
+    <Company>KRWCLASSIC</Company>
+    <Product>NCBOX</Product>
+    <Description>Nginx &amp; Certbot Toolbox (ngc &amp; cbc)</Description>
+    <Copyright>Copyright © 2026 KRWCLASSIC</Copyright>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+
+    <!-- Centralized artifacts output -->
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(MSBuildThisFileDirectory).temp\artifacts</ArtifactsPath>
+
+    <!-- Suppress known AOT reflection/trimming warnings for pure CLI utilities -->
+    <NoWarn>$(NoWarn);IL2026;IL3050</NoWarn>
+  </PropertyGroup>
+</Project>

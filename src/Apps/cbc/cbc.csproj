@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>cbc</AssemblyName>
+    <RootNamespace>cbc</RootNamespace>
+    <PublishAot>true</PublishAot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\NCBOX.Core\NCBOX.Core.csproj" />
+  </ItemGroup>
+</Project>

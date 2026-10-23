@@ -1,0 +1,21 @@
+namespace ngc.Cli;
+
+internal abstract record NgcAction;
+internal sealed record HelpAction : NgcAction;
+internal sealed record VersionAction : NgcAction;
+internal sealed record EditAction(string Domain) : NgcAction;
+internal sealed record RunAction : NgcAction;
+internal sealed record FullRunAction : NgcAction;
+internal sealed record RemoveAction(string Domain) : NgcAction;
+internal sealed record ListAction : NgcAction;
+internal sealed record ListBakAction : NgcAction;
+internal sealed record RestoreAction(string Domain) : NgcAction;
+internal sealed record RenameAction(string OldDomain, string NewDomain) : NgcAction;
+internal sealed record EnableAction(string Domain) : NgcAction;
+internal sealed record DisableAction(string Domain) : NgcAction;
+internal sealed record CleanAction : NgcAction;
+internal sealed record ListFolderAction(string FolderType) : NgcAction;
+internal sealed record SetPathAction(string Target, string Path) : NgcAction;
+internal sealed record TestAction : NgcAction;
+internal sealed record MissingArgumentAction(string Expected) : NgcAction;
+internal sealed record UnknownCommandAction(string Command) : NgcAction;
