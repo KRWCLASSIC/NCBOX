@@ -12,8 +12,8 @@ public static class TerminalConsole
 
     public static void WriteLine(TerminalMessage message)
     {
-        var segment = new TerminalSegment(message.Text, ToStyle(message.Kind));
-        Write(ConsoleErrorFor(message), [segment]);
+        IReadOnlyList<TerminalSegment> segments = message.Segments ?? [new TerminalSegment(message.Text, ToStyle(message.Kind))];
+        Write(ConsoleErrorFor(message), segments);
     }
 
     public static void WriteLine(params TerminalSegment[] segments) => Write(Console.Out, segments);

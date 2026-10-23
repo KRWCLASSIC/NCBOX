@@ -81,7 +81,7 @@ internal sealed class SiteLinkService
                 if (string.Equals(target, config, StringComparison.OrdinalIgnoreCase)) continue;
                 SymlinkHelper.DeleteSymlink(link);
                 SymlinkHelper.CreateSymlink(link, config);
-                messages.Add(new TerminalMessage($"Fixed symlink for {domain}"));
+                messages.Add(new TerminalMessage($"Fixed symlink for {domain}", TerminalMessageKind.Info));
             }
             else if (File.Exists(link))
             {

@@ -39,7 +39,10 @@ internal sealed class SiteCatalogService
             found++;
             string link = Path.Combine(_settings.SitesEnabled, domain);
             bool linked = SymlinkHelper.IsSymlink(link);
-            messages.Add(new TerminalMessage($"{domain}: {(linked ? "Linked" : "Not linked")}", linked ? TerminalMessageKind.Success : TerminalMessageKind.Error));
+            messages.Add(TerminalMessage.FromSegments(
+                new TerminalSegment(domain, TerminalStyle.Yellow),
+                new TerminalSegment(": "),
+                new TerminalSegment(linked ? "Linked" : "Not linked", linked ? TerminalStyle.Green : TerminalStyle.Red)));
         }
         if (found == 0) messages.Add(new TerminalMessage("No configs found.", TerminalMessageKind.Error));
         TerminalMessage? status = await _nginx.GetStatusAsync().ConfigureAwait(false);
@@ -67,7 +70,10 @@ internal sealed class SiteCatalogService
         foreach (string file in files)
         {
             string domain = Path.GetFileNameWithoutExtension(file);
-            messages.Add(new TerminalMessage($"{domain}: Backed up", TerminalMessageKind.Success));
+            messages.Add(TerminalMessage.FromSegments(
+                new TerminalSegment(domain, TerminalStyle.Yellow),
+                new TerminalSegment(": "),
+                new TerminalSegment("Backed up", TerminalStyle.Green)));
         }
         return new NgcCommandResult(0, messages);
     }
@@ -90,7 +96,10 @@ internal sealed class SiteCatalogService
 
         var messages = new List<TerminalMessage>
         {
-            new($"{label}: {folder}", TerminalMessageKind.Info)
+            TerminalMessage.FromSegments(
+                new TerminalSegment(label, TerminalStyle.BoldGray),
+                new TerminalSegment(": "),
+                new TerminalSegment(folder))
         };
         if (!Directory.Exists(folder))
         {
@@ -103,7 +112,9 @@ internal sealed class SiteCatalogService
             string name = Path.GetFileName(file);
             string? target = SymlinkHelper.GetLinkTarget(file);
             if (!string.IsNullOrEmpty(target))
-                messages.Add(new TerminalMessage($"  {name} -> {target}", TerminalMessageKind.Info));
+                messages.Add(TerminalMessage.FromSegments(
+                    new TerminalSegment($"  {name}", TerminalStyle.Cyan),
+                    new TerminalSegment($" -> {target}")));
             else
                 messages.Add(new TerminalMessage($"  {name} ({info.Length} bytes, modified {info.LastWriteTime:yyyy-MM-dd HH:mm})"));
         }

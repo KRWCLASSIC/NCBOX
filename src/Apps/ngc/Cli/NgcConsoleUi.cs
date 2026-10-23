@@ -56,14 +56,14 @@ internal static class NgcConsoleUi
         {
             case RunAction:
             case TestAction:
-                Write("Testing all configs with nginx -t...", TerminalMessageKind.Info);
+                Write("Testing all configs with nginx -t...", TerminalMessageKind.Warning);
                 break;
             case FullRunAction:
                 Write("Ensuring symlinks exist for all configs...", TerminalMessageKind.Success);
-                Write("Testing all configs with nginx -t...", TerminalMessageKind.Info);
+                Write("Testing all configs with nginx -t...", TerminalMessageKind.Warning);
                 break;
             case CleanAction:
-                Write("Cleaning enabled site entries before relinking...", TerminalMessageKind.Warning);
+                Write("Cleaning enabled site entries before relinking...", TerminalMessageKind.Error);
                 break;
         }
     }

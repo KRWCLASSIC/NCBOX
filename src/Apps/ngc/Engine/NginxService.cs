@@ -56,10 +56,12 @@ internal sealed class NginxService
         if (!PlatformInfo.IsLinux) return null;
         var result = await ProcessHelper.RunAsync("systemctl", "is-active nginx").ConfigureAwait(false);
         string status = result.StandardOutput.Trim();
-        var kind = status.Equals("active", StringComparison.OrdinalIgnoreCase)
-            ? TerminalMessageKind.Success
-            : TerminalMessageKind.Error;
-        return new TerminalMessage($"Nginx service status: {status}", kind);
+        var statusStyle = status.Equals("active", StringComparison.OrdinalIgnoreCase)
+            ? TerminalStyle.Green
+            : TerminalStyle.Red;
+        return TerminalMessage.FromSegments(
+            new TerminalSegment($"{Environment.NewLine}Nginx service status: "),
+            new TerminalSegment(status, statusStyle));
     }
 
     private static string Combine(string heading, string detail) =>
