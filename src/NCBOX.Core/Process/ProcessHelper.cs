@@ -25,7 +25,7 @@ public static class ProcessHelper
 
         try
         {
-            using var process = System.Diagnostics.Process.Start(psi);
+            using var process = global::System.Diagnostics.Process.Start(psi);
             if (process == null)
             {
                 return new ProcessResult(-1, string.Empty, "Failed to start process.");
@@ -58,7 +58,7 @@ public static class ProcessHelper
 
         try
         {
-            using var process = System.Diagnostics.Process.Start(psi);
+            using var process = global::System.Diagnostics.Process.Start(psi);
             if (process == null) return -1;
             process.WaitForExit();
             return process.ExitCode;
